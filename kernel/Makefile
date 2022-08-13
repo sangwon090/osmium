@@ -1,5 +1,5 @@
-  C_FILES = $(wildcard *.c) $(wildcard */*.c)
-ASM_FILES = $(wildcard *.asm) $(wildcard */*.asm)
+  C_FILES = $(wildcard src/*.c) $(wildcard src/*/*.c)
+ASM_FILES = $(wildcard src/*.asm) $(wildcard src/*/*.asm)
 OBJ_FILES = $(C_FILES:%.c=%.c.o) $(ASM_FILES:%.asm=%.asm.o)
 
 TOOLCHAIN = /home/sangwon/.cross_compiler/bin

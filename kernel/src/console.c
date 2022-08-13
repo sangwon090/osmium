@@ -1,4 +1,5 @@
 #include <console.h>
+#include <drivers/io.h>
 
 volatile uint16_t *vga = (uint16_t*) 0xB8000;
 static uint32_t x = 0, y = 0;
@@ -125,26 +126,25 @@ void printf(int8_t *str, ...)
 
 void putchar(uint8_t c)
 {
-    if(c == '\r')
+    switch(c)
     {
-        x = 0;
+        case '\r':
+            x = 0;
+            break;
+        
+        case '\n':
+            y ++;
 
-        return;
+            if(y >= CONSOLE_HEIGHT)
+            {
+                scroll();
+            }
+            break;
+        default:
+            vga[y * CONSOLE_WIDTH + x] = c | (color << 8);
+            x ++;
+            break;
     }
-    else if(c == '\n')
-    {
-        y ++;
-
-        if(y >= CONSOLE_HEIGHT)
-        {
-            scroll();
-        }
-
-        return;
-    }
-
-    vga[y * CONSOLE_WIDTH + x] = c | (color << 8);
-    x ++;
 
     if(x >= CONSOLE_WIDTH)
     {
@@ -156,6 +156,8 @@ void putchar(uint8_t c)
             scroll();
         }
     }
+
+    set_cursor_pos(x, y);
 }
 
 void putstr(uint8_t *str)
@@ -182,9 +184,36 @@ void clear_console()
     {
         vga[i] = ' ' | (color << 8);
     }
+
+    x = 0;
+    y = 0;
 }
 
 void scroll()
 {
+    x = 0;
+    y --;
 
+    for(int i=0; i<CONSOLE_HEIGHT - 1; i++)
+    {
+        for(int j=0; j<CONSOLE_WIDTH; j++)
+        {
+            vga[i * CONSOLE_WIDTH + j] = vga[(i + 1) * CONSOLE_WIDTH + j];
+        }
+    }
+
+    for(int i=0; i<CONSOLE_WIDTH; i++)
+    {
+        vga[24 * CONSOLE_WIDTH + i] = ' ' | (color << 8);
+    }
+}
+
+void set_cursor_pos(uint32_t x, uint32_t y)
+{
+    uint16_t pos = y * CONSOLE_WIDTH + x;
+
+    outb(0x3D4, 0x0F);
+    outb(0x3D5, (uint8_t)(pos & 0xFF));
+    outb(0x3D4, 0x0E);
+    outb(0x3D5, (uint8_t)((pos >> 8) & 0xFF));
 }
