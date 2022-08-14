@@ -1,6 +1,9 @@
 #include <types.h>
 #include <console.h>
 #include <drivers/keyboard.h>
+#include <cpu/gdt.h>
+#include <cpu/tss.h>
+#include <cpu/idt.h>
 
 void kernel_main()
 {
@@ -19,6 +22,19 @@ void kernel_main()
     {
         printf(" ERROR!\r\n");
     }
+
+    printf("* initializing GDT and TSS...");
+    gdt_init();
+    gdt_load(GDT_BASE);
+    tss_load(0x18);
+    printf(" DONE!\r\n");
+
+    printf("* initializing IDT...");
+    idt_init();
+    idt_load(IDT_BASE);
+    printf(" DONE!\r\n");
+
+    while(1);
 
     while(1)
     {
