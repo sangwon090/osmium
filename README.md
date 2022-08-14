@@ -15,7 +15,7 @@ An Operating System for x86-64 PC
   - [x] Paging
   - [x] GDT
   - [x] IDT
-  - [ ] PIC
+  - [x] PIC
   - [ ] Timer
 - [ ] Memory Management
   - [ ] Memory Allocator
@@ -28,7 +28,7 @@ An Operating System for x86-64 PC
   - [ ] FAT32
   - [ ] ext2
 - [ ] Device Drivers
-  - [x] PS/2 Keyboard (Partially)
+  - [x] PS/2 Keyboard
 
 ## Acknowledgements
 - [64비트 멀티코어 OS 원리와 구조 1권](https://www.hanbit.co.kr/store/books/look.php?p_code=B3548683222)
