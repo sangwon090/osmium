@@ -1,4 +1,4 @@
-# OSMIUM-RPI
+# OSMIUM
 
 ![GitHub](https://img.shields.io/github/license/sangwon090/osmium?style=flat-square)
 ![Lines of code](https://img.shields.io/tokei/lines/github/sangwon090/osmium?style=flat-square)
