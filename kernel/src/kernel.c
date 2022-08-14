@@ -1,9 +1,7 @@
 #include <types.h>
 #include <console.h>
 #include <drivers/keyboard.h>
-#include <cpu/gdt.h>
-#include <cpu/tss.h>
-#include <cpu/idt.h>
+#include <cpu/cpu.h>
 
 void kernel_main()
 {
@@ -34,8 +32,13 @@ void kernel_main()
     idt_load(IDT_BASE);
     printf(" DONE!\r\n");
 
-    while(1);
+    printf("* initializing PIC...");
+    pic_init();
+    pic_mask(0);
+    int_enable();
+    printf(" DONE!\r\n");
 
+    /*
     while(1)
     {
         if(kbd_is_output_full())
@@ -53,14 +56,18 @@ void kernel_main()
             }
         }
     }
+    */
 
     while(1);
 }
 
-void kernel_panic()
+void kernel_panic(uint32_t vector, uint32_t error)
 {
     set_color(0x4F);
     clear_console();
 
-    printf("KERNEL PANIC\r\n");
+    printf("KERNEL PANIC\r\n\r\n");
+    printf("* reason: %X(%X)\r\n", vector, error);
+
+    while(1);
 }
