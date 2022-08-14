@@ -17,4 +17,4 @@ debug: osmium.iso
 
 clean:
 	$(MAKE) -C kernel clean
-	rm -f *.elf iso/boot/*.elf
+	rm -f *.iso *.elf *.sym iso/boot/*.elf
