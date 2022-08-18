@@ -2,12 +2,14 @@ ENTRY(start32)
 
 SECTIONS
 {
-	. = 1M;
+	. = 64;
 
 	.boot BLOCK(4K) : ALIGN(4K)
 	{
 		*(.multiboot)
 	}
+
+	. = 1M;
 
 	.bss BLOCK(4K) : ALIGN(4K)
 	{
