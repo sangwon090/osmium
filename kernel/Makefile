@@ -3,7 +3,7 @@ ASM_FILES = $(wildcard src/*.asm) $(wildcard src/*/*.asm)
 OBJ_FILES = $(C_FILES:%.c=%.c.o) $(ASM_FILES:%.asm=%.asm.o)
 
 TOOLCHAIN = x86_64-elf-
-GCC_FLAGS = -O2 -Wall -Wextra -ffreestanding -nostdinc -nostdlib -nostartfiles -Iinclude -g
+GCC_FLAGS = -O2 -Wall -Wextra -ffreestanding -nostdinc -nostdlib -nostartfiles -mcmodel=large -Iinclude
 ASM_FLAGS = -f elf64
  LD_FLAGS = 
 

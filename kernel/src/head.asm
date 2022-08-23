@@ -35,40 +35,40 @@ start32:
     jmp gdt.code:start64
 
 init_paging:
-    mov eax, ptable.pdp
+    mov eax, ptable.pud
     or eax, 0b11
-    mov [ptable.pml4], eax
+    mov [ptable.pgd], eax
 
     mov ecx, 0
 
-    .map_pdp:
+    .map_pud:
         mov eax, 0x1000
         mul ecx
-        add eax, ptable.pd
+        add eax, ptable.pmd
         or eax, 0b11
-        mov [ptable.pdp + ecx * 8], eax
+        mov [ptable.pud + ecx * 8], eax
 
         inc ecx
         cmp ecx, 64
-        jne .map_pdp
+        jne .map_pud
 
     mov ecx, 0
 
-    .map_pd:
+    .map_pmd:
         mov eax, 0x200000
         mul ecx
         or eax, 0b10000011
-        mov [ptable.pd + ecx * 8], eax
+        mov [ptable.pmd + ecx * 8], eax
 
         mov eax, 2
         mul ecx
         shr eax, 12
         and eax, 0xFF
-        mov [ptable.pd + ecx * 8 + 4], eax
+        mov [ptable.pmd + ecx * 8 + 4], eax
 
         inc ecx
         cmp ecx, 512 * 64
-        jne .map_pd
+        jne .map_pmd
     
     ret
 
@@ -79,7 +79,7 @@ enable_paging:
     mov cr4, eax
 
     ; set page table
-    mov eax, ptable.pml4
+    mov eax, ptable.pgd
     mov cr3, eax
 
     ; enable long mode
@@ -124,12 +124,14 @@ stack_end:
 ; .ptable
 section .ptable
 ptable:
-    .pml4:
+    .pgd:
         resb 4096
-    .pdp:
+    .pud:
         resb 4096
-    .pd:
+    .pmd:
         resb 4096 * 64
+    .pte:
+        resb 0
 
 
 

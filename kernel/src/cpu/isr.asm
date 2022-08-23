@@ -1,7 +1,7 @@
 section .text
 bits 64
 
-extern handle_exception, handle_interrupt, handle_keyboard
+extern handle_exception, handle_interrupt, handle_keyboard, handle_timer
 
 ; macros
 %macro save_ctx 0
@@ -249,7 +249,7 @@ extern isr_timer
 isr_timer:
     save_ctx
     mov rdi, 32
-    call handle_interrupt
+    call handle_timer
     load_ctx
     iretq
 

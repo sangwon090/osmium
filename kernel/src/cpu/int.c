@@ -1,8 +1,8 @@
 #include <cpu/isr.h>
 #include <cpu/pic.h>
 #include <console.h>
-
-static uint32_t common_int_count = 0;
+#include <drivers/io.h>
+#include <drivers/keyboard.h>
 
 void handle_exception(uint32_t vector, uint64_t error)
 {
@@ -11,12 +11,21 @@ void handle_exception(uint32_t vector, uint64_t error)
 
 void handle_interrupt(uint32_t vector)
 {
-    printf("* INT %x\r\n", vector);
+    if(vector != 0x20) printf("* INT %x\r\n", vector);
+    pic_eoi(vector - PIC_IRQ_START);
+}
+
+void handle_timer(uint32_t vector)
+{
     pic_eoi(vector - PIC_IRQ_START);
 }
 
 void handle_keyboard(uint32_t vector)
 {
-    printf("* KBD\r\n");
+    uint8_t code = inb(0x60);
+    uint8_t ascii = 0, flags = 0;
+    kbd_code_to_ascii(code, &ascii, &flags);
+
+    printf("* KBD (%c)\r\n", ascii);
     pic_eoi(vector - PIC_IRQ_START);
 }

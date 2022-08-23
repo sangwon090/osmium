@@ -3,6 +3,25 @@
 #include <drivers/keyboard.h>
 #include <cpu/cpu.h>
 
+void print_ptable(uint64_t addr)
+{
+
+    uint64_t entry = *(volatile uint64_t*)(addr);
+    printf("PHYS: %X\r\n", ((entry >> 11) & 0x7FFFFFFFFF));
+    printf("FLAG:");
+
+    if(entry & 1) printf(" IS_PRESENT");
+    if(entry & 2) printf(" IS_WRITABLE");
+    if(entry & 4) printf(" IS_USER_ACCESSIBLE");
+    if(entry & 8) printf(" IS_WRITE_THROUGH_CACHING");
+    if(entry & 16) printf(" DISABLE_CACHE");
+    if(entry & 32) printf(" ACCESSED");
+    if(entry & 64) printf(" DIRTY");
+    if(entry & 128) printf(" HUGE_PAGE");
+    if(entry & 256) printf(" GLOBAL");
+    printf("\r\n\r\n");
+}
+
 void kernel_main()
 {
     set_color(0x0F);
@@ -57,17 +76,6 @@ void kernel_main()
         }
     }
     */
-
-    while(1);
-}
-
-void kernel_panic(uint32_t vector, uint32_t error)
-{
-    set_color(0x4F);
-    clear_console();
-
-    printf("KERNEL PANIC\r\n\r\n");
-    printf("* reason: %X(%X)\r\n", vector, error);
 
     while(1);
 }
